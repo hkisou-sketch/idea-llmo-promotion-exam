@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IDEA LLMO コンサルタント昇格試験 2026年度 秋期</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=BIZ+UDPMincho:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#E8EBF1; --sheet:#FFFFFF; --ink:#172154; --ink2:#535C77; --ink3:#7C849B;
+  --rule:#D4D9E4; --rule2:#E9ECF3; --mark:#233A9E; --markInk:#FFFFFF; --soft:#F3F5FA;
+  --warn:#B23A1E; --warnBg:#FBEDE8; --ok:#1F6E4A; --focus:#3D63FF;
+  --serif:"BIZ UDPMincho","Hiragino Mincho ProN","Yu Mincho","YuMincho",serif;
+  --sans:"BIZ UDPGothic","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --desk:#0D111C; --sheet:#161B29; --ink:#E3E7F3; --ink2:#A7AFC6; --ink3:#7F88A3;
+    --rule:#2C3449; --rule2:#222939; --mark:#9AAAFF; --markInk:#0D111C; --soft:#1C2233;
+    --warn:#FF8A70; --warnBg:#3A1E19; --ok:#62D19C; --focus:#9AAAFF; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#0D111C; --sheet:#161B29; --ink:#E3E7F3; --ink2:#A7AFC6; --ink3:#7F88A3;
+  --rule:#2C3449; --rule2:#222939; --mark:#9AAAFF; --markInk:#0D111C; --soft:#1C2233;
+  --warn:#FF8A70; --warnBg:#3A1E19; --ok:#62D19C; --focus:#9AAAFF; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 84px);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.75;font-feature-settings:"palt" 0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--sheet)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* ---------- top bar ---------- */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--sheet);border-bottom:1px solid var(--rule)}
+.bar-in{max-width:980px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.bar-title{font-weight:700;font-size:14px;line-height:1.3;min-width:0}
+.bar-title small{display:block;font-weight:400;color:var(--ink2);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:min(420px,40vw)}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:26px;letter-spacing:.02em;line-height:1;margin-left:auto}
+.timer small{display:block;font-size:11px;font-weight:400;color:var(--ink2);letter-spacing:0;margin-bottom:3px}
+.timer.warn{color:var(--warn)}
+.prog{font-variant-numeric:tabular-nums;font-size:14px;color:var(--ink2);line-height:1.3;text-align:right}
+.prog b{color:var(--ink);font-size:18px}
+.mapbtn{border:1px solid var(--rule);background:var(--soft);border-radius:6px;padding:7px 12px;font-size:13px;cursor:pointer}
+.mapbtn[aria-expanded="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+#saveState{margin-left:10px;color:var(--ink3)}
+#saveState:empty{display:none}
+.map{border-top:1px solid var(--rule2);max-height:min(60vh,520px);overflow:auto}
+.map-in{max-width:980px;margin:0 auto;padding:14px 20px 18px;display:grid;gap:10px}
+.map-row{display:grid;grid-template-columns:64px 1fr;align-items:start;gap:10px}
+.map-row span{font-size:13px;color:var(--ink2);padding-top:2px}
+.cells{display:flex;flex-wrap:wrap;gap:5px}
+.cell{width:30px;height:24px;border:1.5px solid var(--ink3);border-radius:50%;background:transparent;font-size:10px;line-height:1;color:var(--ink2);cursor:pointer;padding:0;font-variant-numeric:tabular-nums}
+.cell.on{background:var(--mark);border-color:var(--mark);color:var(--markInk)}
+
+/* ---------- sheets ---------- */
+main{max-width:860px;margin:0 auto;padding:28px 16px 80px}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:52px 60px;margin-bottom:28px}
+@media (max-width:640px){.sheet{padding:28px 20px}.bar-in{gap:12px;padding:8px 14px;flex-wrap:nowrap}.timer{font-size:22px}.bar-title{display:none}.timer{margin-left:0;margin-right:auto}.mapbtn{padding:7px 10px}.hide-sm{display:none}}
+
+/* cover */
+.cover-top{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--ink2);border-bottom:1px solid var(--ink);padding-bottom:10px}
+.cover h1{font-family:var(--serif);font-weight:700;font-size:clamp(26px,5.6vw,46px);line-height:1.3;letter-spacing:.04em;margin:44px 0 10px}
+.cover h1 span{display:block}
+.cover .sub{font-family:var(--serif);font-size:18px;color:var(--ink2);margin:0 0 40px}
+.fill{display:grid;grid-template-columns:1fr 1fr;border:1.5px solid var(--ink);margin:0 0 36px}
+.fill label{display:block;padding:10px 14px 12px;font-size:12px;color:var(--ink2)}
+.fill label+label{border-left:1.5px solid var(--ink)}
+.fill input{display:block;width:100%;border:0;border-bottom:1px dashed var(--rule);background:transparent;padding:6px 0 4px;font-size:18px;color:var(--ink);outline-offset:4px}
+.fill input:disabled{border-bottom-color:transparent}
+@media (max-width:560px){.fill{grid-template-columns:1fr}.fill label+label{border-left:0;border-top:1.5px solid var(--ink)}}
+h3.sec{font-family:var(--serif);font-size:19px;margin:36px 0 12px;font-weight:700}
+.tbl-wrap{overflow-x:auto;margin:0 0 8px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.6}
+th,td{border-bottom:1px solid var(--rule);padding:9px 10px;text-align:left;vertical-align:top}
+th{font-weight:700;color:var(--ink2);font-size:12.5px;border-bottom:1.5px solid var(--ink)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nw{white-space:nowrap}
+tfoot td{font-weight:700;border-bottom:0;border-top:1.5px solid var(--ink)}
+.rules{margin:0;padding-left:1.5em;font-size:15px}
+.rules li{margin:4px 0}
+.passline{background:var(--soft);border-left:3px solid var(--ink);padding:12px 16px;font-size:14.5px;margin:18px 0 0}
+.start{margin-top:36px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.btn{border:1.5px solid var(--ink);background:var(--ink);color:var(--sheet);border-radius:6px;padding:13px 26px;font-weight:700;font-size:16px;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.small{padding:9px 16px;font-size:14px}
+.btn.danger{background:transparent;color:var(--warn);border-color:var(--warn)}
+.hint{font-size:13px;color:var(--ink2)}
+.resume{color:var(--ok);font-weight:700}
+
+/* part */
+.parthead{display:grid;grid-template-columns:auto 1fr;gap:4px 22px;align-items:end;border-bottom:1.5px solid var(--ink);padding-bottom:16px;margin-bottom:18px}
+.partno{grid-row:span 2;font-family:var(--serif);font-weight:700;font-size:60px;line-height:.9;margin:0;font-variant-numeric:tabular-nums}
+.partno.small{font-size:40px}
+.parthead h2{font-family:var(--serif);font-size:28px;margin:0;line-height:1.2}
+.partmeta{display:flex;gap:18px;flex-wrap:wrap;margin:0;font-size:13.5px;color:var(--ink2)}
+.partmeta div{display:flex;gap:6px}
+.partmeta dt{color:var(--ink3)}
+.partmeta dd{margin:0;font-weight:700;color:var(--ink)}
+.lead{font-size:14.5px;color:var(--ink2);margin:0 0 8px}
+
+/* question */
+.q{padding:30px 0 30px;border-bottom:1px solid var(--rule2)}
+.q:last-child{border-bottom:0;padding-bottom:6px}
+.qhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.qno{font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+.qtag{font-size:12px;color:var(--ink2);border:1px solid var(--rule);border-radius:3px;padding:1px 7px;line-height:1.6}
+.exlink{font-size:12.5px;color:var(--ink2);margin-left:auto}
+.qtag.multi{color:var(--ink);border-color:var(--ink)}
+.stem{font-family:var(--serif);font-size:17px;line-height:1.95;margin:0 0 16px;white-space:pre-line}
+.note{background:var(--soft);padding:12px 16px;font-size:14.5px;margin:-4px 0 16px;border-radius:3px}
+.opts{display:grid;gap:6px}
+.opt{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:start;padding:9px 10px;border-radius:6px;cursor:pointer;font-size:15.5px;line-height:1.7}
+.opt:hover{background:var(--soft)}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.bubble{width:36px;height:26px;border:1.5px solid var(--ink2);border-radius:50%;display:grid;place-items:center;font-size:13.5px;font-weight:700;color:var(--ink2);margin-top:1px;transition:background .12s,border-color .12s}
+.opt input:checked + .bubble{background:var(--mark);border-color:var(--mark);color:var(--markInk)}
+.opt input:focus-visible + .bubble{outline:2px solid var(--focus);outline-offset:2px}
+.opt input:disabled ~ *{cursor:default}
+.q table{margin-bottom:16px}
+textarea{width:100%;border:1px solid var(--rule);border-radius:4px;background:var(--sheet);padding:12px 14px;font-size:15.5px;line-height:1.85;resize:vertical;font-family:var(--sans)}
+textarea:focus{border-color:var(--ink)}
+textarea:disabled{background:var(--soft)}
+.count{display:flex;justify-content:flex-end;gap:10px;font-size:12.5px;color:var(--ink3);margin-top:4px;font-variant-numeric:tabular-nums}
+.count.over b{color:var(--warn)}
+
+/* exhibit */
+.exhibit{border:1.5px solid var(--ink);padding:26px 28px 18px;margin:30px 0 4px;border-radius:2px}
+.exhibit h3{font-family:var(--serif);font-size:20px;margin:0 0 4px}
+.exhibit .exsub{font-size:12.5px;color:var(--ink2);margin:0 0 16px}
+.exblock{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--rule2)}
+.exblock h4{margin:0;font-size:13.5px;color:var(--ink2);font-weight:700}
+.exblock ul{margin:0;padding-left:1.15em;font-size:15px;line-height:1.8}
+@media (max-width:640px){.exblock{grid-template-columns:1fr;gap:4px}.exhibit{padding:20px 16px 12px}}
+
+/* submit */
+.unans{margin:6px 0 18px;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.unans a{display:inline-block;font-size:13px;border:1px solid var(--warn);color:var(--warn);border-radius:3px;padding:2px 8px;text-decoration:none;font-variant-numeric:tabular-nums}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}
+.msg{font-size:14px;margin:8px 0 0;min-height:1.4em}
+.msg.err{color:var(--warn)}
+.msg.okk{color:var(--ok)}
+.banner{background:var(--warnBg);color:var(--warn);border-radius:4px;padding:10px 14px;font-size:14px;margin:0 0 16px;font-weight:700}
+.export{margin-top:12px}
+.export textarea{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.55}
+.erase{margin-top:44px;border-top:1px solid var(--rule2);padding-top:18px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media print{.bar,.map,.actions,.erase,.start{display:none!important}body{background:#fff}.sheet{border:0;padding:0}}
+</style>
+</head>
+<body>
+<header class="bar" id="bar">
+  <div class="bar-in">
+    <div class="bar-title">IDEA LLMO 昇格試験<small><span id="barName">受験者未入力</span><span id="saveState" aria-live="polite"></span></small></div>
+    <div class="timer" id="timer"><small id="timerLabel">試験時間</small><span id="timerVal">3:00:00</span></div>
+    <div class="prog"><b id="progN">0</b> / <span id="progT">0</span><br><span style="font-size:11px">解答済み</span></div>
+    <button class="mapbtn" id="mapBtn" aria-expanded="false" aria-controls="map">解答状況</button>
+  </div>
+  <div class="map" id="map" hidden><div class="map-in" id="mapIn"></div></div>
+</header>
+
+<main>
+  <section class="sheet cover" id="cover">
+    <div class="cover-top"><span>IDEATECH 社内昇格試験</span><span id="coverTerm"></span></div>
+    <h1 id="coverTitle"><span>IDEA LLMO</span><span>コンサルタント昇格試験</span></h1>
+    <p class="sub">筆記試験　<span class="nw">180分・300点</span></p>
+
+    <div class="fill">
+      <label>氏名（必須）<input id="inName" autocomplete="name" maxlength="40"></label>
+      <label>所属・役職（任意）<input id="inOrg" maxlength="60"></label>
+    </div>
+
+    <h3 class="sec">試験の構成</h3>
+    <div class="tbl-wrap"><table id="compo"><thead><tr><th>部</th><th class="hide-sm">内容</th><th>形式</th><th class="num">配点</th><th class="num">目安</th></tr></thead><tbody></tbody><tfoot></tfoot></table></div>
+
+    <h3 class="sec">注意事項</h3>
+    <ol class="rules">
+      <li>試験時間は180分です。「試験を開始する」を押すと計測が始まり、問題が表示されます。</li>
+      <li>解答はこのブラウザに自動で保存されます。途中で閉じても、同じブラウザで開けば続きから再開できます。別の端末やブラウザには引き継がれません。</li>
+      <li>生成AI、Web検索、提案資料・社内資料の参照はできません。</li>
+      <li>「すべて選べ」とある問題は、完全に一致した場合のみ正解です。部分点はありません。</li>
+      <li>記述の字数は目安です。超えても減点はしませんが、要点を絞る力も評価に入ります。</li>
+      <li>時間を過ぎても解答はできますが、超過した時間は記録されます。</li>
+      <li>最後に「解答ファイルを保存」で .md ファイルを保存し、指示された方法で提出してください。</li>
+      <li>第5部・第6部の解答は、後日の面談で説明を求めることがあります。</li>
+    </ol>
+    <p class="passline" id="passline"></p>
+
+    <div class="start">
+      <button class="btn" id="startBtn" disabled>試験を開始する</button>
+      <span class="hint" id="startHint">氏名を入力すると開始できます。</span>
+    </div>
+  </section>
+
+  <div id="parts" hidden></div>
+
+  <section class="sheet" id="submit" hidden>
+    <header class="parthead"><p class="partno small">提出</p><h2>見直しと提出</h2><dl class="partmeta"><div><dt>解答済み</dt><dd id="subN">0</dd></div><div><dt>未解答</dt><dd id="subU">0</dd></div></dl></header>
+    <div class="banner" id="doneBanner" hidden>試験は終了しています。解答の変更はできません。解答ファイルを保存して提出してください。</div>
+    <p class="lead" id="unansLead">未解答の問題（押すと移動します）</p>
+    <ul class="unans" id="unans"></ul>
+    <div class="actions">
+      <button class="btn" id="saveBtn" hidden>解答ファイルを保存（.md）</button>
+      <button class="btn ghost" id="showBtn">解答テキストを表示</button>
+      <button class="btn ghost" id="finishBtn">試験を終了する</button>
+    </div>
+    <p class="msg" id="subMsg" aria-live="polite"></p>
+    <div class="export" id="exportBox" hidden>
+      <p class="hint">保存がうまくいかない場合は、下のテキストをすべてコピーして、テキストファイル（.md）として提出してください。</p>
+      <textarea id="exportTa" rows="14" readonly></textarea>
+      <div class="actions"><button class="btn small ghost" id="copyBtn">すべてコピー</button></div>
+    </div>
+    <div class="erase">
+      <p class="hint">この端末に保存されている解答と開始時刻を消去し、最初の状態に戻します。採点者の指示がない限り使わないでください。</p>
+      <button class="btn small danger" id="eraseBtn">この端末の解答をすべて消去</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const META = {"examId": "idea-llmo-promo-2026a", "title": "IDEA LLMO コンサルタント昇格試験", "term": "2026年度 秋期", "minutes": 180, "total": 300, "pass": {"total": 210, "choice": 85, "written": 115}};
+const PARTS = [{"id": "p1", "no": 1, "title": "基礎理解", "points": 50, "minutes": 25, "kind": "choice", "lead": "IDEA LLMOの提案資料（2026年10月版）の理解を問います。各2点。「すべて選べ」とある問題は完全一致で正解です。", "items": [{"id": "1-01", "type": "single", "pts": 2, "stem": "IDEA LLMOのポジショニングとして、最も適切な説明はどれか。", "options": [{"id": "ア", "text": "対話型生成AIはモデルの更新で回答が変わりやすいため、まずAI Overviewへの掲載を優先し、そこから対話型AIへの波及を狙う"}, {"id": "イ", "text": "AI Overview・AIモードはSEOの延長線上にあると捉え、BtoBの意思決定に影響する対話型生成AIに集中する"}, {"id": "ウ", "text": "対話型生成AIとAI Overviewを同じ比重で扱い、すべてのAI窓口で均等に露出を取る"}, {"id": "エ", "text": "AI Overviewは情報探索系の質問で出やすいため、BtoBの比較検討の主戦場になると捉える"}]}, {"id": "1-02", "type": "single", "pts": 2, "stem": "IDEATECHの自社調査（n=502）で、商談前の3つのステージ（課題認識・要件整理／解決策・候補探索／深掘り比較・絞り込み）までに「最有力候補」が確定している割合（累積）はどれか。", "options": [{"id": "ア", "text": "51.2%"}, {"id": "イ", "text": "84.7%"}, {"id": "ウ", "text": "74.3%"}, {"id": "エ", "text": "91.4%"}]}, {"id": "1-03", "type": "single", "pts": 2, "stem": "「BtoB企業の取引検討プロセスにおける対話型生成AI活用に関する実態調査 2026」の「85.6%」が示しているものはどれか。", "options": [{"id": "ア", "text": "AIで取引先を調べた結果、その企業を候補から外した割合と、優先度を下げた割合の合計"}, {"id": "イ", "text": "取引先・検討先の企業情報を対話型生成AIで調べた経験がある割合"}, {"id": "ウ", "text": "AIで調べた企業情報が、取引の開始・継続の判断に影響したと答えた割合"}, {"id": "エ", "text": "自社がAIにどう表示されているかを、何らかの形で確認したことがある割合"}]}, {"id": "1-04", "type": "single", "pts": 2, "stem": "同調査で、候補から外した・優先度を下げた理由の上位3項目（競合の方が具体的に紹介されていた／実績・事例の情報が不足していた／ネガティブな情報が表示された）を、資料はどう解釈しているか。", "options": [{"id": "ア", "text": "AIの回答に誤った情報が多く、ハルシネーション対策が最優先である"}, {"id": "イ", "text": "そもそも社名が出てこない企業が大半で、まず認知の獲得が最優先である"}, {"id": "ウ", "text": "自社サイトの情報が古いことが主な原因で、更新頻度を上げれば解決する"}, {"id": "エ", "text": "自社の絶対評価ではなく、競合との情報量の差による「相対比較での脱落」である"}]}, {"id": "1-05", "type": "single", "pts": 2, "stem": "同調査で「自社のAI表示を定期的にモニタリングしている」割合と、資料が引き出している示唆の組み合わせとして正しいものはどれか。", "options": [{"id": "ア", "text": "38.4%　／　社内での共有が進んでおり、管理体制はおおむね整っている"}, {"id": "イ", "text": "7.4%　／　確認はしているが、継続的に管理する体制はほとんどない"}, {"id": "ウ", "text": "29.4%　／　担当者が個人的に試しているだけで、組織的な確認はない"}, {"id": "エ", "text": "8.7%　／　大半の企業が、まだ自社の見え方を確認していない"}]}, {"id": "1-06", "type": "single", "pts": 2, "stem": "取引先・検討先の企業情報を調べる際に使われている対話型生成AI（複数回答）を、利用率の高い順に並べたものとして正しいのはどれか。", "options": [{"id": "ア", "text": "ChatGPT → Gemini → Microsoft Copilot → Perplexity"}, {"id": "イ", "text": "ChatGPT → Perplexity → Gemini → Claude"}, {"id": "ウ", "text": "Gemini → ChatGPT → Perplexity → Microsoft Copilot"}, {"id": "エ", "text": "Gemini → ChatGPT → Microsoft Copilot → Claude"}]}, {"id": "1-07", "type": "single", "pts": 2, "stem": "資料は「AIは質問の種類によって参照する情報源が変わる」根拠として、海外の2つの分析（Yext、Muck Rack）を示している。正しい理解はどれか。", "options": [{"id": "ア", "text": "2つの分析はいずれもBtoB企業を対象としており、引用元の約9割が第三者の情報だった"}, {"id": "イ", "text": "Yextの分析では引用の約86%が第三者の情報、Muck Rackの分析では約89%が自社の情報だった"}, {"id": "ウ", "text": "2つの分析はいずれも、自社サイトを改善するだけで引用の大半を取れることを示している"}, {"id": "エ", "text": "機能・価格の確認に寄った質問ではブランドが管理する情報が、比較・推奨に寄った質問では第三者の情報が、それぞれ引用の大半を占めた"}]}, {"id": "1-08", "type": "single", "pts": 2, "stem": "GEO-16論文（arXiv:2509.10762）で、3つのAIエンジン横断で平均78%の引用率を示したページの条件はどれか。", "options": [{"id": "ア", "text": "GEOスコア0.70以上、かつ16項目のうち12項目以上を満たす"}, {"id": "イ", "text": "GEOスコア0.50以上、かつ16項目のうち8項目以上を満たす"}, {"id": "ウ", "text": "16項目をすべて満たす"}, {"id": "エ", "text": "従来の検索順位で1〜3位に入っている"}]}, {"id": "1-09", "type": "multi", "pts": 2, "stem": "GEO-16論文で分析の対象になったAIエンジンとして、資料に記載されているものをすべて選べ。", "options": [{"id": "ア", "text": "Google AI Overview"}, {"id": "イ", "text": "ChatGPT"}, {"id": "ウ", "text": "Brave Summary"}, {"id": "エ", "text": "Perplexity"}, {"id": "オ", "text": "Gemini"}]}, {"id": "1-10", "type": "single", "pts": 2, "stem": "同論文の著者が、情報の発信者に求めた「二重の戦略」とは何か。", "options": [{"id": "ア", "text": "SEO対策とリスティング広告を同時に行うこと"}, {"id": "イ", "text": "事前学習データとRAGの両方に向けて情報を出すこと"}, {"id": "ウ", "text": "ページ自体の品質（GEO-16の基準）を高め、同時に信頼できる第三者ドメインでの掲載を確保すること"}, {"id": "エ", "text": "自社サイトとnoteに同じ記事を同時に掲載すること"}]}, {"id": "1-11", "type": "single", "pts": 2, "stem": "資料が「BtoBでは回答時参照（RAG）への最適化が最優先」とする理由として、最も適切なものはどれか。", "options": [{"id": "ア", "text": "BtoBは専門性が高く情報量が少ないため事前学習が薄くなりやすく、回答時参照に頼る割合が大きくなるから"}, {"id": "イ", "text": "BtoBは検索量が多く、AIが頻繁にWebを参照するから"}, {"id": "ウ", "text": "BtoBは事前学習のデータが豊富なため、差がつくのはRAGだけだから"}, {"id": "エ", "text": "RAGは事前学習よりも短期間で、確実に操作できるから"}]}, {"id": "1-12", "type": "single", "pts": 2, "stem": "従来型SEOの「上位掲載」について、資料が示している結論はどれか。", "options": [{"id": "ア", "text": "AIは1〜3位の記事しか引用しないため、3位以内が必須になった"}, {"id": "イ", "text": "AIはSEOの順位を参照しないため、順位は無関係になった"}, {"id": "ウ", "text": "人間もAIも1ページ目までしか読まないため、10位以内を狙うべきだ"}, {"id": "エ", "text": "AIは30〜60位あたりまでざっくり見ているため、多くのキーワードで30〜60位以内に入っていればよい"}]}, {"id": "1-13", "type": "single", "pts": 2, "stem": "資料は、ルールメイクリサーチ®（選定基準調査）をどのような方法論として説明しているか。", "options": [{"id": "ア", "text": "比較サイトのランキングで1位を取るための方法論"}, {"id": "イ", "text": "AIが挙げる候補20社の中から、ユーザーに提示される5社に残るための方法論"}, {"id": "ウ", "text": "指名検索の回数を増やすための方法論"}, {"id": "エ", "text": "競合の弱点を調査で明らかにし、候補から外させるための方法論"}]}, {"id": "1-14", "type": "single", "pts": 2, "stem": "「空白地帯の見つけ方（VS構造からの逆算）」の手順として正しいものはどれか。", "options": [{"id": "ア", "text": "有利な軸を決める → 比較される競合を洗い出す → 競合の弱みを特定する"}, {"id": "イ", "text": "情報の空白を探す → 比較される競合を洗い出す → 有利な軸を決める"}, {"id": "ウ", "text": "比較される競合を3〜5パターン洗い出す → 各競合に構造的に勝てる軸を特定する → その軸がまだ選定基準として言語化されていないことを確認する"}, {"id": "エ", "text": "比較される競合を洗い出す → 情報の空白を確認する → 競合の弱みを攻める基準をつくる"}]}, {"id": "1-15", "type": "multi", "pts": 2, "stem": "本田哲也氏の「戦略PR 6つの法則」のうち、資料が「AIの回答生成ロジックと直接つながる」とした3つをすべて選べ。", "options": [{"id": "ア", "text": "おおやけ（社会性）"}, {"id": "イ", "text": "ばったり（偶然性）"}, {"id": "ウ", "text": "おすみつき（信頼性）"}, {"id": "エ", "text": "しみじみ（当事者性）"}, {"id": "オ", "text": "そもそも（普遍性）"}, {"id": "カ", "text": "かけてとく（機知性）"}]}, {"id": "1-16", "type": "single", "pts": 2, "stem": "選定基準の「起・承・転・結」のうち、資料が「最大の差別化ポイント」とする段階と、その理由の組み合わせはどれか。", "options": [{"id": "ア", "text": "起　／　基準を最初に提示した企業が、AIにとっての第一定義者になれるから"}, {"id": "イ", "text": "承　／　調査で裏付けないと、基準がポジショントークで終わるから"}, {"id": "ウ", "text": "結　／　AIが参照・学習しやすい形で発信しないと、基準が届かないから"}, {"id": "エ", "text": "転　／　その基準を自社だけが満たすことを客観的に証明しないと、競合も同じ基準に乗れてしまうから"}]}, {"id": "1-17", "type": "single", "pts": 2, "stem": "「転」を設計するときに使う材料として、資料が示しているものはどれか。", "options": [{"id": "ア", "text": "実績・認定・受賞・特許・業界で唯一のポジションなど、客観的に証明できる要素"}, {"id": "イ", "text": "「当社は品質が高い」という自社の評価を、数値を添えずに繰り返し発信すること"}, {"id": "ウ", "text": "競合製品の弱点や不具合の事例"}, {"id": "エ", "text": "自社の顧客への満足度アンケート（調査方法は非開示）"}]}, {"id": "1-18", "type": "single", "pts": 2, "stem": "選定基準に調査で裏付けを与えるとき、資料が求めている条件はどれか。", "options": [{"id": "ア", "text": "調査会社の社名を必ず明記すること"}, {"id": "イ", "text": "サンプル数を1,000以上にすること"}, {"id": "ウ", "text": "調査対象・手法・サンプル数などの方法を開示し、客観性を担保すること"}, {"id": "エ", "text": "自社に有利な結果が出た設問だけを公開すること"}]}, {"id": "1-19", "type": "single", "pts": 2, "stem": "シムトップス社（i-Reporter）の事例で、つくった選定基準が同社に有利に働いた構造的な理由はどれか。", "options": [{"id": "ア", "text": "帳票型の市場で、i-Reporterが圧倒的なシェアを持っていたから"}, {"id": "イ", "text": "「自社の課題に合わせて帳票型かフォーム型かを選ぶ」という基準の下では、両方式に対応する同社はどちらが選ばれても候補に残り、片方にしか対応していない競合は自然に外れるから"}, {"id": "ウ", "text": "フォーム型の欠点を調査で示し、フォーム型の競合を否定したから"}, {"id": "エ", "text": "AI Overviewの表示枠を広告で確保したから"}]}, {"id": "1-20", "type": "single", "pts": 2, "stem": "プロンプトジャーニーの段階と「当てるコンテンツ」の組み合わせのうち、資料と異なるものはどれか。", "options": [{"id": "ア", "text": "認知段階　―　業界課題を可視化する調査リリース"}, {"id": "イ", "text": "検討段階　―　選定基準LP＋調査コラム"}, {"id": "ウ", "text": "比較段階　―　VS構造コンテンツ＋白書＋FAQ"}, {"id": "エ", "text": "行動段階　―　業界の構造とトレンドを整理した白書"}]}, {"id": "1-21", "type": "single", "pts": 2, "stem": "プロンプトジャーニーのスライドが示している、コンテンツを配置していく順番の考え方はどれか。", "options": [{"id": "ア", "text": "検討段階を先に固め、それが終わったら認知段階へ広げて市場を大きくする"}, {"id": "イ", "text": "認知段階から順に、検討・比較・行動へと進める"}, {"id": "ウ", "text": "行動段階から逆算し、比較・検討・認知の順につくる"}, {"id": "エ", "text": "比較段階のVS構造コンテンツから着手する"}]}, {"id": "1-22", "type": "single", "pts": 2, "stem": "LLMOコンサルティングの料金として、資料の記載と一致するものはどれか（税抜）。", "options": [{"id": "ア", "text": "初期費用80万円、月額45万円（6ヶ月〜）／40万円（12ヶ月〜）"}, {"id": "イ", "text": "初期費用なし、月額60万円（契約期間にかかわらず一律）"}, {"id": "ウ", "text": "初期費用50万円（初月のみ）、月額60万円（6ヶ月〜）／45万円（12ヶ月〜）"}, {"id": "エ", "text": "初期費用50万円、月額50万円（6ヶ月〜）／40万円（12ヶ月〜）"}]}, {"id": "1-23", "type": "single", "pts": 2, "stem": "LLMOコンサルティングのみの契約で、「LLMO施策の新規提案／施策の要件定義」について約束している内容はどれか。", "options": [{"id": "ア", "text": "新規施策は、実行まで含めて対応する"}, {"id": "イ", "text": "実行支援を含まないため要件定義までにとどまるが、毎月最低3つ以上の新規施策の提案を確約する"}, {"id": "ウ", "text": "新規施策の提案は四半期に1回、要件定義は実行支援の契約時のみ"}, {"id": "エ", "text": "新規施策の提案は、実行支援を併用した場合にのみ行う"}]}, {"id": "1-24", "type": "single", "pts": 2, "stem": "LLMO実行支援のプランのうち、「60万円／月（12ヶ月）」のプランにだけ含まれるものはどれか。", "options": [{"id": "ア", "text": "選定基準LP案制作"}, {"id": "イ", "text": "調査レポートWP作成"}, {"id": "ウ", "text": "調査コラム原稿作成"}, {"id": "エ", "text": "メディアプロモート"}]}, {"id": "1-25", "type": "single", "pts": 2, "stem": "選定基準LP案制作の納品範囲として正しいものはどれか。", "options": [{"id": "ア", "text": "FAQ5〜10問付きの選定基準型LPを、htmlの「案」として提供する。デザインの調整と実装は顧客側で行う"}, {"id": "イ", "text": "デザイン・実装・公開までを一括で行う"}, {"id": "ウ", "text": "ワイヤーフレーム（構成図）のみを提供する"}, {"id": "エ", "text": "顧客のCMSに入稿するところまでを行う"}]}]}, {"id": "p2", "no": 2, "title": "数字で語る", "points": 30, "minutes": 20, "kind": "choice", "lead": "料金・調査データ・モニタリングの数字を、顧客の前で正しく扱えるかを問います。各3点。計算用のメモは手元の紙を使ってください。", "items": [{"id": "2-01", "type": "single", "pts": 3, "stem": "「LLMOコンサルティング（12ヶ月）」と「LLMO実行支援 40万円／月（12ヶ月）」を同時に契約した場合の、初年度の総額（税抜）はいくらか。", "options": [{"id": "ア", "text": "950万円"}, {"id": "イ", "text": "1,020万円"}, {"id": "ウ", "text": "1,070万円"}, {"id": "エ", "text": "1,130万円"}]}, {"id": "2-02", "type": "single", "pts": 3, "stem": "次の2つのプランを、選定基準調査1テーマあたりの総額（初期費用・コンサル費込み）で比べる。プランBはプランAより、1テーマあたり約いくら安いか。", "table": {"head": ["プラン", "構成"], "rows": [["A", "LLMOコンサルティング（6ヶ月）＋LLMO実行支援 50万円／月（6ヶ月・6テーマ）"], ["B", "LLMOコンサルティング（12ヶ月）＋LLMO実行支援 40万円／月（12ヶ月・12テーマ）"]]}, "options": [{"id": "ア", "text": "約10万円"}, {"id": "イ", "text": "約20万円"}, {"id": "ウ", "text": "約40万円"}, {"id": "エ", "text": "約29万円"}]}, {"id": "2-03", "type": "single", "pts": 3, "stem": "製造業のA社への再提案。初期費用50万円、LLMOコンサルティングは定価45万円／月に特別割引5万円を適用して40万円／月×12ヶ月、ルールメイクリサーチ®は1本40万円で年3本、制作物は先方の内製とする。年間の総額はいくらか。", "options": [{"id": "ア", "text": "650万円"}, {"id": "イ", "text": "590万円"}, {"id": "ウ", "text": "710万円"}, {"id": "エ", "text": "1,070万円"}]}, {"id": "2-04", "type": "single", "pts": 3, "stem": "調査リリースで、「導入済み 23.4%」「導入予定 18.9%」「検討中 12.2%」をまとめて「前向き層」として書く。IDEATECHの表記ルールに沿うものはどれか。", "options": [{"id": "ア", "text": "回答人数を合算して割合を計算し直し、その値を記載する"}, {"id": "イ", "text": "表示している割合をそのまま足した54.5%を記載し、合算方法の注記は入れない"}, {"id": "ウ", "text": "54.5%を記載し、「※端数処理により合計が一致しない場合があります」と注記する"}, {"id": "エ", "text": "誤差が生じるため、合算した値は記載しない"}]}, {"id": "2-05", "type": "single", "pts": 3, "stem": "「候補から外した・優先度を下げた理由」（n=231）で、「競合の方が具体的に紹介されていたから」は54.5%だった。これは、調査全体の回答者310名のうち約何%にあたるか。", "options": [{"id": "ア", "text": "約54.5%"}, {"id": "イ", "text": "約47%"}, {"id": "ウ", "text": "約41%"}, {"id": "エ", "text": "約35%"}]}, {"id": "2-06", "type": "multi", "pts": 3, "stem": "スライド「調査から見えた7つのファクト」は、出典の表記が「（n=310）」になっている。次のうち、実際の母数がn=310ではないものをすべて選べ。", "options": [{"id": "ア", "text": "FACT1　87.1%（AIで取引先情報を調べた経験あり）"}, {"id": "イ", "text": "FACT2　85.6%（候補外し・優先度低下を経験）"}, {"id": "ウ", "text": "FACT3　82.9%（AI情報が取引判断に影響）"}, {"id": "エ", "text": "FACT4　57.0%（社内候補企業の評判確認でAIを利用）"}, {"id": "オ", "text": "FACT5　54.5%（「競合の方が具体的だった」を理由に候補外し）"}, {"id": "カ", "text": "FACT7　7.4%（自社のAI表示を定期的にモニタリング）"}]}, {"id": "2-07", "type": "single", "pts": 3, "stem": "ターゲットプロンプト40本を、4つのAI（ChatGPT、Gemini、Claude、Perplexity）で月1回計測している（計160回答）。自社の言及は先月28回答、今月36回答だった。報告として正しいものはどれか。", "options": [{"id": "ア", "text": "言及率は36%で、前月から8ポイント上がった"}, {"id": "イ", "text": "言及率は22.5%で、前月から5.0ポイント上がった（前月比では約29%の増加）"}, {"id": "ウ", "text": "言及率は22.5%で、前月から28.6ポイント上がった"}, {"id": "エ", "text": "言及率は22.5%で、前月から8.0ポイント上がった"}]}, {"id": "2-08", "type": "single", "pts": 3, "stem": "ある顧客の月次データは次のとおり。この数字を見た顧客への説明として、最も適切なものはどれか。", "table": {"head": ["経路", "サイト流入", "問い合わせ", "商談化"], "rows": [["自然検索", "12,000", "24件", "6件"], ["AI経由（リファラー＋フォーム回答）", "150", "6件", "4件"]]}, "options": [{"id": "ア", "text": "AI経由は流入全体の約1.2%、問い合わせ全体の20%にすぎないので、優先度は低いと説明する"}, {"id": "イ", "text": "AI経由の問い合わせ率は自然検索の20倍あるので、AI経由の流入を半年で10倍にすれば問い合わせも10倍になる。流入をKPIに置こうと説明する"}, {"id": "ウ", "text": "商談数は自然検索がAI経由の1.5倍あるので、まず自然検索のCVRを改善すべきで、LLMOはまだ早いと説明する"}, {"id": "エ", "text": "流入は小さいが、問い合わせ率も商談化率もAI経由のほうが高い。流入数ではなく、問い合わせの件数・企業の質・受注で評価しようと説明する"}]}, {"id": "2-09", "type": "single", "pts": 3, "stem": "調査で、業種Xの回答者の48%、業種Yの回答者の41%が「導入後の伴走支援」を重視すると答えた（各n=100）。リリースの書き方として、最も適切なものはどれか。", "options": [{"id": "ア", "text": "各n=100では誤差の幅が±10ポイント近くあり、7ポイントの差は誤差の範囲に収まる。「傾向」にとどめるか、サンプルを増やして確かめる"}, {"id": "イ", "text": "「業種Xは業種Yより、伴走支援を有意に重視している」と書く"}, {"id": "ウ", "text": "合計でn=200あるので、7ポイントの差を「明確な差」と書いてよい"}, {"id": "エ", "text": "比率どうしは比較できないので、業種別の数字は出さない"}]}, {"id": "2-10", "type": "single", "pts": 3, "stem": "資料には、ターゲットプロンプトを「3〜5個に絞り込む」という記述と、「メインと周辺を含めて30〜50程度を分析・調査する」という記述がある。両者の関係の理解として正しいものはどれか。", "options": [{"id": "ア", "text": "両者は矛盾しているため、顧客ごとにどちらかを選ぶ"}, {"id": "イ", "text": "方向性を決める中核のプロンプト（3〜5個）と、現状の把握とモニタリングのために周辺まで含めて分析する母集団（30〜50程度）は、役割が違う"}, {"id": "ウ", "text": "大企業は30〜50本、中小企業は3〜5本で設計する"}, {"id": "エ", "text": "初月に30〜50本を分析し、2ヶ月目以降は3〜5本だけをモニタリングする"}]}]}, {"id": "p3", "no": 3, "title": "現場判断", "points": 45, "minutes": 25, "kind": "choice", "lead": "実際の支援現場で起きた状況をもとにしています（社名は伏せています）。正解は「IDEATECHが実際に取った、または取るべき判断」です。各3点。", "items": [{"id": "3-01", "type": "single", "pts": 3, "stem": "新素材メーカーA社に、初期費用＋LLMOコンサルティング＋LLMO実行支援（年1,070万円）を提案したところ、「高い。記事やサイトの実装は社内でやるので、戦略と月次のアドバイスに絞れないか」と返ってきた。最も筋のよい再提案はどれか。", "options": [{"id": "ア", "text": "月次アドバイスだけの「ライトプラン」を新しくつくり、月20万円で提示する"}, {"id": "イ", "text": "実行支援だけを残し、コンサルティングを外して価格を下げる"}, {"id": "ウ", "text": "月次アドバイザリー（コンサルティング）を本体に、ルールメイクリサーチ®をオプションではなくプラン本体として年数本組み込む。定価は崩さず、この顧客向けの特別割引で調整し、制作物は先方の内製とする"}, {"id": "エ", "text": "年2〜3回のスポット相談だけを請ける"}]}, {"id": "3-02", "type": "single", "pts": 3, "stem": "業界団体B会の担当者が資料をダウンロードし、「AI対策でサイトへの流入を増やしたい」と相談してきた。最初の返信で伝えることとして、最も適切なものはどれか。", "options": [{"id": "ア", "text": "AI経由の流入が大きく増えることは期待しにくいと率直に伝え、AI経由の問い合わせは案件化しやすいので、問い合わせの件数・企業の質・受注で見ることを提案する。そのうえで、受注をつくるプロセスの設計と、道標になる大規模な分析を提案する"}, {"id": "イ", "text": "半年で流入2倍を目標に置き、AI Overview向けのSEO改善から始めることを提案する"}, {"id": "ウ", "text": "効果が見えるまでに1年はかかるので、まず12ヶ月契約を前提に話を進める"}, {"id": "エ", "text": "流入の目標は先方に決めてもらい、こちらは施策の実行に集中する"}]}, {"id": "3-03", "type": "single", "pts": 3, "stem": "ワークフローSaaSのC社で、選定基準の候補を「AIがその基準を認知しているか」×「C社がその基準で強いか」の4象限に整理した。ルールメイク調査で最初に狙う象限はどれか。", "options": [{"id": "ア", "text": "AIがすでに基準として認知している × C社が強い"}, {"id": "イ", "text": "AIがすでに基準として認知している × C社が弱い"}, {"id": "ウ", "text": "AIがまだ基準として認知していない × C社が弱い"}, {"id": "エ", "text": "AIがまだ基準として認知していない × C社が強い"}]}, {"id": "3-04", "type": "single", "pts": 3, "stem": "現場帳票SaaSのD社。AIに「D社の競合は？」と聞くと、利用者の多い汎用ノーコードツールKがよく一緒に挙がる。Kとの向き合い方として、最も適切なものはどれか。", "options": [{"id": "ア", "text": "Kを対立軸にせず、「補完・連携する関係」として位置づける。競合への相乗り（「◯◯の競合は？」で自社が筆頭に出る状態づくり）は、領域の近い専業ツールを相手に行う"}, {"id": "イ", "text": "Kの弱点を突く比較記事を出し、VS構造で正面から勝ち切る"}, {"id": "ウ", "text": "Kの名前が出ると自社が埋もれるため、Kへの言及は一切しない"}, {"id": "エ", "text": "Kより安い価格帯を前に出し、乗り換えを促す"}]}, {"id": "3-05", "type": "single", "pts": 3, "stem": "D社が、製薬業界のGMP（製造記録・試験記録の電子化）領域を次の注力カテゴリにした。同じ時期に、サプリメントのGMPに関わる制度の変更が話題になっている。発信の方針として最も適切なものはどれか。", "options": [{"id": "ア", "text": "「標準でGMP対応済み」と言い切り、AIにその表現を覚えさせる"}, {"id": "イ", "text": "話題性を優先し、調査の対象と設問をサプリメント業界に絞る"}, {"id": "ウ", "text": "GMPという言葉はリスクがあるので使わない"}, {"id": "エ", "text": "「GMP対応済み」とは言い切らず、製品・工程ごとのリスクに合わせた設計が前提だと分かる表現にする。制度変更の話題は見出しのフックにとどめ、企画と設問は製薬全体の課題で組む"}]}, {"id": "3-06", "type": "single", "pts": 3, "stem": "ERPベンダーE社の「建設業の基幹システムの選び方」コラム。E社は記事に競合の社名を出したくない。どう書くのが適切か。", "options": [{"id": "ア", "text": "AIは固有名詞でしか比較しないので、競合の社名は必ず出すよう説得する"}, {"id": "イ", "text": "社名は出さず、方式・製品タイプ・特徴など、読み手とAIには対象が分かる表現にとどめる"}, {"id": "ウ", "text": "競合には一切触れず、E社製品の機能紹介に絞る"}, {"id": "エ", "text": "「A社」「B社」と伏せた比較表をつくり、E社が全項目で勝っている形にする"}]}, {"id": "3-07", "type": "single", "pts": 3, "stem": "人材サービスのF社。エンジニア転職に関するプロンプトでは、専門特化型の競合が1番手、F社は総合型の中で2番手・全体で4番手。戦略のコンセプトとして最も筋がいいものはどれか。", "options": [{"id": "ア", "text": "専門特化型の1番手から首位を奪うため、専門領域のコンテンツを大量に投下する"}, {"id": "イ", "text": "総合型の1番手の弱点を突き、総合型の中での首位を取りにいく"}, {"id": "ウ", "text": "「1位を奪う」のではなく、「最初に使われる／必ず併用される」位置を取る。「複数のキャリアパスを比べるべき」→「方向性が決まっていないなら総合型を使う」という二段構えの基準をつくり、専門型との併用を前提に設計する"}, {"id": "エ", "text": "指名プロンプト（「F社の評判は？」など）の対策だけに絞る"}]}, {"id": "3-08", "type": "single", "pts": 3, "stem": "F社は社内規定で、求人数や実績の実数を公開できない。「転」（自社だけが基準を満たすことの証明）をどう組み立てるか。", "options": [{"id": "ア", "text": "割合・指数・伸び率など、開示できる形のファクトに置き換え、構造的な特徴（例：扱う職種の幅）や第三者の評価と組み合わせて証明する"}, {"id": "イ", "text": "実数が出せない以上「転」はつくれないので、「起・承・結」で進める"}, {"id": "ウ", "text": "公開情報から推定した実数を「約◯件」と書く"}, {"id": "エ", "text": "競合が公開している実数と並べ、相対的に多いことを示す"}]}, {"id": "3-09", "type": "single", "pts": 3, "stem": "AIサービスの展示会に、SEO会社と共同でブースを出す。IDEATECHの看板コピーの方向性として、最も適切なものはどれか。", "options": [{"id": "ア", "text": "「SEOの時代は終わった。これからはLLMO」"}, {"id": "イ", "text": "「SEO会社にはできない。PRでAIに選ばれる」"}, {"id": "ウ", "text": "料金の安さを前に出し、SEOには触れない"}, {"id": "エ", "text": "SEOを否定せず、PR・独自調査・第三者からの言及でAIに強くなる、という文脈を打ち出す"}]}, {"id": "3-10", "type": "single", "pts": 3, "stem": "顧客から「サイトをAI対策仕様に作り直せば、AIに推奨されるようになりますか」と聞かれた。最も適切な答え方はどれか。", "options": [{"id": "ア", "text": "サイトは自社の強みや特徴をAIに正しく理解してもらう基盤で、作り直しただけで推奨されるわけではない。推奨を左右するのは一次情報（独自調査など）と第三者からの言及なので、器と中身の両方で設計すると答える"}, {"id": "イ", "text": "構造化データとFAQを入れれば推奨される、と答える"}, {"id": "ウ", "text": "サイトはAIの推奨とは関係がないので、改修は不要だと答える"}, {"id": "エ", "text": "AI Overviewに表示されるようになるので、対話型AIでも推奨される、と答える"}]}, {"id": "3-11", "type": "single", "pts": 3, "stem": "新規顧客への提案書の冒頭の流れとして、IDEATECHの「発信の順番」の原則に沿うものはどれか。", "options": [{"id": "ア", "text": "「ルールメイクでAIの推奨をコントロールできる」から入り、だから選定基準調査を、と続ける"}, {"id": "イ", "text": "「AIで買い手の購買行動（バイヤージャーニー）が変わった」→だから信頼できるコンテンツ（マーケティング・アセット）が必要→それを作り続けた結果として、AIに推奨され「基準をつくる側」に回れる、と展開する"}, {"id": "ウ", "text": "料金表→実績→手法の順に見せ、意思決定を早める"}, {"id": "エ", "text": "事前学習とRAGの仕組みを詳しく説明し、技術的な対策から入る"}]}, {"id": "3-12", "type": "single", "pts": 3, "stem": "調査リリースの末尾に置く会社・サービス紹介（ボイラープレート）を、IDEATECHの「RTB型」で書く。構成として正しいものはどれか。", "options": [{"id": "ア", "text": "会社概要 → 代表メッセージ → 沿革"}, {"id": "イ", "text": "製品の機能一覧 → 価格 → 問い合わせ先"}, {"id": "ウ", "text": "調査で浮かび上がった選定基準を再掲 → その基準を自社（製品）が満たす根拠を箇条書き → CTA"}, {"id": "エ", "text": "調査結果のサマリーを再掲 → 今後の展望"}]}, {"id": "3-13", "type": "single", "pts": 3, "stem": "長く続いている調査PRの継続顧客に、LLMOモニタリングボードを提供したい。社内で採用している取り決めに最も近いものはどれか。", "options": [{"id": "ア", "text": "3ヶ月の無料期間のあと、自動的に有償に切り替える"}, {"id": "イ", "text": "社名を公開した導入事例記事への協力を、必須の条件にする"}, {"id": "ウ", "text": "モニタリングは原価がかかるので、継続顧客でも必ず有償で提供する"}, {"id": "エ", "text": "既存の取り組みに含めて費用はいただかず、代わりにITreviewへのレビュー協力と取り組みの継続をお願いする。取り組みは他社への事例としても活かす"}]}, {"id": "3-14", "type": "single", "pts": 3, "stem": "財産コンサルティング会社G社の来期。G社はIDEATECHのほか、サイト制作会社、PR支援会社（リリースやプレスレター、記者向け勉強会を担当）と組む4者体制になる。IDEATECHの打ち手として、最も筋がいいものはどれか。", "options": [{"id": "ア", "text": "PR支援会社と役割がぶつかるので、プレスリリースからは手を引き、サイト改善の助言に専念する"}, {"id": "イ", "text": "調査を軸に、1つの調査からゲート付きの調査レポートと、ゲートなしのインフォグラフィック・エグゼクティブサマリー・選び方コラム・noteへ展開し、複数のドメインで配信する。プレスリリースは、ネタの連携とAI文脈の付与をPR支援会社と一緒に運用する"}, {"id": "ウ", "text": "成果が分散するので、PR支援会社との契約を見直すようG社に進言する"}, {"id": "エ", "text": "サイト制作も含めて、IDEATECHが一括で請け負う提案に切り替える"}]}, {"id": "3-15", "type": "single", "pts": 3, "stem": "共催ウェビナーの参加企業から、LLMO支援で優先して提案する相手を1社選ぶ。最も優先度が高いのはどれか。", "options": [{"id": "ア", "text": "単価10万円以下のSaaS。広告で毎月500件のリードを獲得しており、さらに増やしたい"}, {"id": "イ", "text": "業界トップで指名検索も多く、比較検討されることがほとんどない企業"}, {"id": "ウ", "text": "単価300〜500万円以上のBtoB商材。展示会に年間数千万円を投じているが商談につながらず、業界3〜5番手で外資の競合がいる"}, {"id": "エ", "text": "来店型の飲食チェーン。口コミサイトの評価を上げたい"}]}]}, {"id": "p4", "no": 4, "title": "記述", "points": 60, "minutes": 40, "kind": "written", "lead": "顧客の前で説明できるかを問います。各10点。字数は目安です。超えても減点はしませんが、要点を絞る力も評価に入ります。", "items": [{"id": "4-01", "type": "text", "pts": 10, "target": 300, "rows": 8, "stem": "顧客の役員から「選定基準を調査で裏付けて発信しても、競合も同じ基準を掲げてきたら意味がないのでは」と問われた。どう答えるか。具体例を1つ入れること（シムトップス社とIDEATECH自身の例は使わないこと）。"}, {"id": "4-02", "type": "text", "pts": 10, "target": 500, "rows": 12, "stem": "ある顧客が自社の強みを「サポートが手厚い」「導入実績が豊富」「使いやすい」と説明している。顧客の業種・商材を自分で設定したうえで（設定も書くこと）、3つの強みそれぞれを、AIに伝わる解像度の「強みワード」「それが指す中身」「裏付けに使うファクト（どう取るかも）」に書き換えよ。"}, {"id": "4-03", "type": "text", "pts": 10, "target": 600, "rows": 14, "stem": "次の商材について、プロンプトジャーニーの4段階（認知・検討・比較・行動）をすべて含む計6本のターゲットプロンプトを書け。各プロンプトに「AIにどう答えてほしいか（自社の出方）」を1行添えること。", "note": "商材：中堅企業（従業員300〜3,000名）向けの勤怠管理クラウド。シフト制と固定時間制が混在する職場（物流・小売・医療福祉）での運用に強い。主な競合は、大手の総合HRスイートと、低価格の勤怠専業SaaS。"}, {"id": "4-04", "type": "text", "pts": 10, "target": 400, "rows": 10, "stem": "月次のモニタリングで、主要プロンプト10本のうち先月は7本で推奨されていた顧客が、今月は3本に減った。同じプロンプトで、競合H社の言及が増えている。原因の仮説を3つ以上挙げ、それぞれの確かめ方と、翌月の定例までに打つ手を書け。"}, {"id": "4-05", "type": "text", "pts": 10, "target": 400, "rows": 10, "stem": "顧客の経営会議で「LLMOの成果は何で測るのか。サイトの流入はほとんど増えていないじゃないか」と言われた。何を、どう測り、どの時間軸で判断するのかを、経営陣に向けた説明として書け。"}, {"id": "4-06", "type": "text", "pts": 10, "target": 400, "rows": 10, "stem": "エンゲージメントサーベイを提供する顧客の、選定基準の候補が3つある。①価格が安い　②AI機能が充実している　③測定した後の改善アクションまで伴走する。顧客は③で勝てるうえ、価格も競合より安い。それぞれを選定基準として採用するかどうかを「市場・顧客」「競合構造」「調査で裏付けられるか」の3つの観点で判断し、最終的にどの基準をどう打ち出すかを書け。"}]}, {"id": "p5", "no": 5, "title": "総合ケース", "points": 70, "minutes": 45, "kind": "written", "lead": "2つのケースに答えてください。ケース1は40点、ケース2は30点です。資料の会社はどちらも架空です。資料にない前提を置く場合は、置いた前提を書いてください。", "items": [{"id": "case1", "type": "exhibit", "title": "ケース1　株式会社ノースブリッジ（架空）　40点", "blocks": [{"h": "会社と商材", "items": ["製造業向けの設備保全クラウド「BRIDGE-M」を提供。従業員420名、売上62億円。", "年間契約は600万〜2,000万円。導入社数340社（公開可）、継続率98%（公開可）、平均導入期間3ヶ月（社内集計）。", "紙の点検表をスキャンすると、そのままのレイアウトで入力画面になる機能が現場に好評。", "AIによる故障予兆の機能はβ版（正式版は2027年春の予定）。", "記事・LPの実装は社内で対応できる。"]}, {"h": "販路と市場", "items": ["主な販路は展示会（年間約2,500万円）、セミナー、SIerパートナー経由。広告はほとんど出していない。", "国内では4番手。1番手は外資のグローバル資産管理スイート（高機能・高価格。導入に時間がかかると言われる）、2番手は国内大手ERPの保全オプション、3番手は低価格の保全SaaS。Excelや汎用ノーコードツールで自作している工場も多い。"]}, {"h": "AIでの現状（IDEATECHの初期チェック）", "items": ["「製造業向けの設備保全システムでおすすめは？」に対し、ChatGPTは1〜3番手を挙げ、BRIDGE-Mは出ない。Geminiでは、まれに5社目として出る。", "「BRIDGE-Mの評判は？」には、「中小企業向け」「導入事例が少ない」など、事実と違う・古い説明が返ってくる。", "プレスリリースは年2本（新機能の告知のみ）。第三者メディアでの言及はほぼない。"]}, {"h": "先方の体制と声", "items": ["窓口はマーケティング部長。悩みは「マーケの成果を経営に説明できない」。", "社長は「AIで1位を取れ」と言っている。営業部長は「AI経由のリードなんて来ない」と懐疑的。", "予算は年800万円まで（稟議の上限）。2027年1月の開始を希望。"]}, {"h": "制約", "items": ["選定基準調査は、1調査あたり本調査10問まで（スクリーニング設問は別枠）。"]}]}, {"id": "5-1-1", "type": "text", "pts": 4, "target": 300, "rows": 7, "stem": "（1）想定するペルソナを2〜3つ挙げ、それぞれの役職・置かれた状況・AIに相談する場面を書け。"}, {"id": "5-1-2", "type": "text", "pts": 6, "target": 400, "rows": 9, "stem": "（2）VS構造を3〜5パターン洗い出し、それぞれでBRIDGE-Mが構造的に勝てる軸を書け。"}, {"id": "5-1-3", "type": "text", "pts": 8, "target": 600, "rows": 13, "stem": "（3）選定基準の「起・承・転・結」を設計せよ。基準の案、調査での裏付けの案、「転」の根拠（使える材料と、使ってはいけない・注意すべき材料）、発信先を含めること。"}, {"id": "5-1-4", "type": "text", "pts": 6, "target": 500, "rows": 12, "stem": "（4）選定基準調査を1本企画せよ。調査対象・スクリーニング条件・サンプル数・本調査の設問（10問以内）を書き、ルールを支える核心の設問には◎を付けること。リリースの見出し案も1本書くこと。"}, {"id": "5-1-5", "type": "text", "pts": 4, "target": 300, "rows": 8, "stem": "（5）コアとなるターゲットプロンプトを5本書け。"}, {"id": "5-1-6", "type": "text", "pts": 5, "target": 400, "rows": 10, "stem": "（6）6ヶ月のロードマップ（月ごとの主要アクション）と、プロセス指標・成果指標を書け。"}, {"id": "5-1-7", "type": "text", "pts": 4, "target": 250, "rows": 6, "stem": "（7）予算800万円以内で価格を提案せよ。IDEA LLMOの料金表を使い、プランの構成・総額・その構成にした理由を書くこと。"}, {"id": "5-1-8", "type": "text", "pts": 3, "target": 300, "rows": 7, "stem": "（8）社長の「AIで1位を取れ」と、営業部長の「AI経由のリードは来ない」に、それぞれどう答えるか。"}, {"id": "case2", "type": "exhibit", "title": "ケース2　株式会社サウスゲート・ソリューションズ（架空）　30点", "blocks": [{"h": "これまで", "items": ["基幹システム事業部が、中堅製造業向けERP「SG-ERP」で3ヶ月のLLMOプロジェクトを実施。来月で契約が終わる。", "実施した内容：ペルソナ3種のストラテジーボード、モニタリング（指定プロンプト36本×4つのAI）、「選び方」コラム1本、選定基準調査1本＋ホワイトペーパー。"]}, {"h": "3ヶ月の結果", "items": ["指定プロンプトでの言及率は8%から14%に上がった。", "新しいコラムが、Perplexityの回答で2回引用された。", "AI経由とみられる問い合わせが1件あり、商談化した。"]}, {"h": "課題と社内事情", "items": ["事業部はPR TIMESなどのプレスリリース配信を使えていない。本社広報の承認が必要で、事業部単独で発信した前例がない。調査結果は自社サイトとホワイトペーパーにしか出ていない。", "窓口のマーケティング課長は、来週、事業部長と本部長に報告し、来期（12ヶ月）の予算を通したい。事業部長は「数字で見せてほしい」タイプ。本部長は「AI対策は流行りでは」と懐疑的。"]}]}, {"id": "5-2-1", "type": "text", "pts": 8, "target": 500, "rows": 11, "stem": "（1）経営層への報告スライドの骨子を5〜8枚で書け。各スライドで言うことを1文で書くこと。「取り組みの報告」「協力のお願い」「来期の承認事項」を必ず含めること。"}, {"id": "5-2-2", "type": "text", "pts": 10, "target": 500, "rows": 11, "stem": "（2）来期の提案内容と、予算配分の考え方を、優先順位を付けて書け。"}, {"id": "5-2-3", "type": "text", "pts": 7, "target": 400, "rows": 9, "stem": "（3）本社広報を動かすための材料と、進め方を書け。"}, {"id": "5-2-4", "type": "text", "pts": 5, "target": 300, "rows": 7, "stem": "（4）来期、この取り組みが失敗するとしたら何が原因になりそうか（プレモーテム）。原因を2つ以上挙げ、それぞれの予防策を書け。"}]}, {"id": "p6", "no": 6, "title": "あなたの考え", "points": 45, "minutes": 25, "kind": "written", "lead": "正解はありません。あなたが何を見て、どう考え、何をするのかを読みます。各15点。資料や会社の言い回しをなぞるより、自分の言葉で書いた答案を評価します。", "items": [{"id": "6-01", "type": "text", "pts": 15, "target": 1000, "rows": 16, "stem": "提案資料（2026年10月版）の中で、「顧客に突っ込まれたら弱い」とあなたが考える主張やデータの使い方を2つ挙げよ。それぞれについて、(a)どこが弱いのか　(b)顧客はどう突っ込んでくるか　(c)あなたならどう直すか、またはどう答えるか、を書け。"}, {"id": "6-02", "type": "text", "pts": 15, "target": 800, "rows": 14, "stem": "「LLMO」という言葉は、3年後も残っているか。あなたの考えを述べよ。そのうえで、言葉が残っても残らなくても変わらない、IDEATECHのLLMOコンサルタントの価値は何かを書け。"}, {"id": "6-03", "type": "text", "pts": 15, "target": 800, "rows": 14, "stem": "あなたがLLMOコンサルタントに昇格したら、最初の12ヶ月でIDEA LLMOに何をもたらすか。数字を伴う目標を3つと、そのためにあなたが変える行動を書け。最後に、今の自分に足りないものを1つ、正直に書け。"}]}];
+const KEY_STORE = "idea-llmo-exam:" + META.examId;
+const LIMIT_MS = META.minutes * 60 * 1000;
+
+let S = {examId: META.examId, name: "", org: "", startedAt: null, finishedAt: null, answers: {}};
+let storageOK = true;
+
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY_STORE);
+    if(raw){ const d = JSON.parse(raw); if(d && d.examId === META.examId) S = Object.assign(S, d); }
+  }catch(e){ storageOK = false; }
+}
+let saveTimer = null;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    try{
+      localStorage.setItem(KEY_STORE, JSON.stringify(S));
+      const t = new Date();
+      setSaveState("自動保存 " + pad(t.getHours()) + ":" + pad(t.getMinutes()) + ":" + pad(t.getSeconds()));
+    }catch(e){
+      storageOK = false;
+      setSaveState("この環境では自動保存できません。最後に必ず解答ファイルを保存してください。");
+    }
+  }, 350);
+}
+function setSaveState(t){ document.getElementById("saveState").textContent = t; }
+function pad(n){ return String(n).padStart(2,"0"); }
+
+const QS = [];
+PARTS.forEach(p => p.items.forEach(q => { if(q.type !== "exhibit") QS.push(Object.assign({part:p}, q)); }));
+
+function el(tag, attrs, kids){
+  const e = document.createElement(tag);
+  if(attrs) for(const k in attrs){
+    if(k === "class") e.className = attrs[k];
+    else if(k === "text") e.textContent = attrs[k];
+    else if(k.startsWith("on")) e.addEventListener(k.slice(2), attrs[k]);
+    else e.setAttribute(k, attrs[k]);
+  }
+  (kids||[]).forEach(c => { if(c) e.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+  return e;
+}
+
+/* ---------- cover ---------- */
+function renderCover(){
+    document.getElementById("coverTerm").textContent = META.term;
+  const tb = document.querySelector("#compo tbody");
+  const kindLabel = {choice:"選択式", written:"記述・論述"};
+  const desc = {p1:"提案資料の理解", p2:"料金・調査データ・計測の数字", p3:"支援現場での判断", p4:"顧客への説明", p5:"ケース2題（設計と継続提案）", p6:"批判的検討と持論"};
+  PARTS.forEach(p => {
+    const n = p.items.filter(q => q.type !== "exhibit").length;
+    tb.appendChild(el("tr", null, [
+      el("td", {text:"第" + p.no + "部　" + p.title}),
+      el("td", {class:"hide-sm", text: desc[p.id] || ""}),
+      el("td", {class:"nw", text: kindLabel[p.kind] + "　" + n + "問"}),
+      el("td", {class:"num", text: p.points + "点"}),
+      el("td", {class:"num", text: p.minutes + "分"})
+    ]));
+  });
+  document.querySelector("#compo tfoot").appendChild(el("tr", null, [
+    el("td", {text:"合計"}), el("td", {class:"hide-sm"}), el("td", {class:"nw", text: QS.length + "問"}),
+    el("td", {class:"num", text: META.total + "点"}), el("td", {class:"num", text: META.minutes + "分"})
+  ]));
+  document.getElementById("passline").textContent =
+    "合格基準：総合" + META.pass.total + "点以上、かつ選択式（第1〜3部・125点）" + META.pass.choice +
+    "点以上、かつ記述・論述（第4〜6部・175点）" + META.pass.written + "点以上。";
+}
+
+/* ---------- parts ---------- */
+function renderParts(){
+  const wrap = document.getElementById("parts");
+  PARTS.forEach(p => {
+    const n = p.items.filter(q => q.type !== "exhibit").length;
+    const sec = el("section", {class:"sheet part", id:"part-" + p.id});
+    sec.appendChild(el("header", {class:"parthead"}, [
+      el("p", {class:"partno", text: String(p.no)}),
+      el("h2", {text: "第" + p.no + "部　" + p.title}),
+      el("dl", {class:"partmeta"}, [
+        el("div", null, [el("dt", {text:"配点"}), el("dd", {text: p.points + "点"})]),
+        el("div", null, [el("dt", {text:"目安"}), el("dd", {text: p.minutes + "分"})]),
+        el("div", null, [el("dt", {text:"問題数"}), el("dd", {text: n + "問"})])
+      ])
+    ]));
+    sec.appendChild(el("p", {class:"lead", text: p.lead}));
+    p.items.forEach(q => sec.appendChild(q.type === "exhibit" ? renderExhibit(q) : renderQ(q)));
+    wrap.appendChild(sec);
+  });
+}
+function renderExhibit(x){
+  const box = el("section", {class:"exhibit", id:"ex-" + x.id}, [
+    el("h3", {text: x.title}),
+    el("p", {class:"exsub", text:"資料（以下の設問はこの資料にもとづいて答えてください）"})
+  ]);
+  x.blocks.forEach(b => {
+    box.appendChild(el("div", {class:"exblock"}, [
+      el("h4", {text: b.h}),
+      el("ul", null, b.items.map(t => el("li", {text: t})))
+    ]));
+  });
+  return box;
+}
+function renderTable(t){
+  const wrap = el("div", {class:"tbl-wrap"});
+  const tbl = el("table");
+  const thead = el("thead", null, [el("tr", null, t.head.map((h,i) => el("th", {class: i>0 && t.head.length>2 ? "num" : "", text:h})))]);
+  const tbody = el("tbody", null, t.rows.map(r => el("tr", null, r.map((c,i) => el("td", {class: i>0 && t.head.length>2 ? "num" : "", text:c})))));
+  tbl.appendChild(thead); tbl.appendChild(tbody); wrap.appendChild(tbl);
+  return wrap;
+}
+function renderQ(q){
+  const art = el("article", {class:"q", id:"q-" + q.id});
+  const tags = [el("span", {class:"qno", text:"問 " + q.id}), el("span", {class:"qtag", text: q.pts + "点"})];
+  if(q.type === "multi") tags.push(el("span", {class:"qtag multi", text:"すべて選べ"}));
+  if(q.type === "text" && q.target) tags.push(el("span", {class:"qtag", text:"目安 " + q.target + "字"}));
+  const cm = q.id.match(/^5-(\d)-/);
+  if(cm) tags.push(el("a", {class:"exlink", href:"#ex-case" + cm[1], text:"ケース" + cm[1] + "の資料を見る"}));
+  art.appendChild(el("div", {class:"qhead"}, tags));
+  art.appendChild(el("p", {class:"stem", text: q.stem}));
+  if(q.note) art.appendChild(el("p", {class:"note", text: q.note}));
+  if(q.table) art.appendChild(renderTable(q.table));
+
+  if(q.type === "single" || q.type === "multi"){
+    const box = el("div", {class:"opts", role: q.type === "single" ? "radiogroup" : "group", "aria-label":"問 " + q.id + " の選択肢"});
+    q.options.forEach(o => {
+      const inp = el("input", {type: q.type === "single" ? "radio" : "checkbox", name:"a-" + q.id, value:o.id});
+      inp.addEventListener("change", () => onChoice(q));
+      box.appendChild(el("label", {class:"opt"}, [inp, el("span", {class:"bubble", "aria-hidden":"true", text:o.id}), el("span", {class:"otext", text:o.text})]));
+    });
+    art.appendChild(box);
+  } else {
+    const ta = el("textarea", {id:"t-" + q.id, rows: String(q.rows || 8), "aria-label":"問 " + q.id + " の解答"});
+    const cnt = el("div", {class:"count"}, [el("span", null, [el("b", {id:"c-" + q.id, text:"0"}), "字"]), el("span", {text: q.target ? "目安 " + q.target + "字" : ""})]);
+    ta.addEventListener("input", () => { S.answers[q.id] = ta.value; updateCount(q); refreshProgress(); save(); });
+    art.appendChild(ta); art.appendChild(cnt);
+  }
+  return art;
+}
+function updateCount(q){
+  const v = (S.answers[q.id] || "").replace(/\s/g, "");
+  const c = document.getElementById("c-" + q.id);
+  if(!c) return;
+  c.textContent = v.length;
+  c.parentNode.parentNode.classList.toggle("over", q.target && v.length > q.target * 1.3);
+}
+function onChoice(q){
+  const picked = [...document.querySelectorAll('input[name="a-' + q.id + '"]:checked')].map(i => i.value);
+  if(q.type === "single") S.answers[q.id] = picked[0] || "";
+  else S.answers[q.id] = picked;
+  refreshProgress(); save();
+}
+function isAnswered(q){
+  const a = S.answers[q.id];
+  if(a == null) return false;
+  if(Array.isArray(a)) return a.length > 0;
+  return String(a).trim().length > 0;
+}
+function restoreAnswers(){
+  QS.forEach(q => {
+    const a = S.answers[q.id];
+    if(a == null) return;
+    if(q.type === "single"){
+      const i = document.querySelector('input[name="a-' + q.id + '"][value="' + a + '"]'); if(i) i.checked = true;
+    } else if(q.type === "multi"){
+      (a||[]).forEach(v => { const i = document.querySelector('input[name="a-' + q.id + '"][value="' + v + '"]'); if(i) i.checked = true; });
+    } else {
+      const t = document.getElementById("t-" + q.id); if(t){ t.value = a; updateCount(q); }
+    }
+  });
+}
+
+/* ---------- map & progress ---------- */
+function renderMap(){
+  const m = document.getElementById("mapIn");
+  PARTS.forEach(p => {
+    const cells = el("div", {class:"cells"});
+    p.items.filter(q => q.type !== "exhibit").forEach(q => {
+      const short = q.id.split("-").slice(1).join("-");
+      cells.appendChild(el("button", {class:"cell", "data-q":q.id, title:"問 " + q.id, "aria-label":"問 " + q.id + "へ移動", text: short.replace(/^0/, ""),
+        onclick: () => { document.getElementById("q-" + q.id).scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"}); toggleMap(false); }}));
+    });
+    m.appendChild(el("div", {class:"map-row"}, [el("span", {text:"第" + p.no + "部"}), cells]));
+  });
+}
+function toggleMap(force){
+  const b = document.getElementById("mapBtn"), m = document.getElementById("map");
+  const open = force == null ? m.hidden : force;
+  m.hidden = !open; b.setAttribute("aria-expanded", String(open));
+}
+function refreshProgress(){
+  let n = 0; const un = [];
+  QS.forEach(q => {
+    const on = isAnswered(q); if(on) n++; else un.push(q);
+    const c = document.querySelector('.cell[data-q="' + q.id + '"]'); if(c) c.classList.toggle("on", on);
+  });
+  document.getElementById("progN").textContent = n;
+  document.getElementById("progT").textContent = QS.length;
+  document.getElementById("subN").textContent = n + "問";
+  document.getElementById("subU").textContent = un.length + "問";
+  const ul = document.getElementById("unans"); ul.textContent = "";
+  un.forEach(q => ul.appendChild(el("li", null, [el("a", {href:"#q-" + q.id, text: q.id})])));
+  document.getElementById("unansLead").textContent = un.length ? "未解答の問題（押すと移動します）" : "すべての問題に解答しています。";
+}
+
+/* ---------- timer ---------- */
+function fmt(ms){
+  const s = Math.max(0, Math.floor(ms/1000));
+  return Math.floor(s/3600) + ":" + pad(Math.floor(s%3600/60)) + ":" + pad(s%60);
+}
+function tick(){
+  const lab = document.getElementById("timerLabel"), val = document.getElementById("timerVal"), box = document.getElementById("timer");
+  if(!S.startedAt){ lab.textContent = "試験時間"; val.textContent = fmt(LIMIT_MS); box.classList.remove("warn"); return; }
+  const end = S.finishedAt || Date.now();
+  const left = LIMIT_MS - (end - S.startedAt);
+  if(S.finishedAt){ lab.textContent = "終了（所要時間）"; val.textContent = fmt(end - S.startedAt); box.classList.toggle("warn", left < 0); return; }
+  if(left >= 0){ lab.textContent = "残り時間"; val.textContent = fmt(left); box.classList.toggle("warn", left <= 15*60*1000); }
+  else { lab.textContent = "時間超過"; val.textContent = "+" + fmt(-left); box.classList.add("warn"); }
+}
+
+/* ---------- start / finish / lock ---------- */
+function showExam(){
+  document.getElementById("parts").hidden = false;
+  document.getElementById("submit").hidden = false;
+  document.getElementById("startBtn").hidden = true;
+  const h = document.getElementById("startHint");
+  h.textContent = S.finishedAt ? "試験は終了しています。" : "試験中です。開始時刻：" + new Date(S.startedAt).toLocaleString("ja-JP");
+  h.className = "hint resume";
+  document.getElementById("inName").disabled = true;
+  document.getElementById("inOrg").disabled = true;
+}
+function lock(){
+  document.querySelectorAll("#parts input, #parts textarea").forEach(i => i.disabled = true);
+  document.getElementById("doneBanner").hidden = false;
+  document.getElementById("finishBtn").hidden = true;
+}
+function updateName(){
+  document.getElementById("barName").textContent = S.name ? S.name + (S.org ? "（" + S.org + "）" : "") : "受験者未入力";
+  const ok = S.name.trim().length > 0;
+  document.getElementById("startBtn").disabled = !ok;
+  if(!S.startedAt) document.getElementById("startHint").textContent = ok ? "開始すると180分の計測が始まります。" : "氏名を入力すると開始できます。";
+}
+
+/* ---------- export ---------- */
+function dt(ts){ if(!ts) return "—"; const d = new Date(ts); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes()); }
+function buildExport(){
+  const now = Date.now();
+  const end = S.finishedAt || now;
+  const usedMin = S.startedAt ? Math.round((end - S.startedAt)/60000) : 0;
+  const over = Math.max(0, usedMin - META.minutes);
+  const n = QS.filter(isAnswered).length;
+  const L = [];
+  L.push("# " + META.title + "　" + META.term + "　解答");
+  L.push("");
+  L.push("- 氏名：" + (S.name || ""));
+  L.push("- 所属・役職：" + (S.org || ""));
+  L.push("- 開始：" + dt(S.startedAt));
+  L.push("- 終了：" + (S.finishedAt ? dt(S.finishedAt) : "未終了（" + dt(now) + " 時点で書き出し）"));
+  L.push("- 所要時間：" + usedMin + "分" + (over ? "（" + over + "分超過）" : ""));
+  L.push("- 解答数：" + n + " / " + QS.length);
+  PARTS.forEach(p => {
+    L.push(""); L.push("## 第" + p.no + "部　" + p.title + "（" + p.points + "点）");
+    p.items.forEach(q => {
+      if(q.type === "exhibit"){ L.push(""); L.push("### " + q.title); return; }
+      const a = S.answers[q.id];
+      L.push(""); L.push("### 問 " + q.id + "（" + q.pts + "点）");
+      if(q.type === "single") L.push("解答：" + (a || "（未解答）"));
+      else if(q.type === "multi") L.push("解答：" + ((a && a.length) ? a.slice().sort().join("・") : "（未解答）"));
+      else L.push((a && a.trim()) ? a.trim() : "（未解答）");
+    });
+  });
+  const payload = {examId: META.examId, name: S.name, org: S.org, startedAt: S.startedAt, finishedAt: S.finishedAt, exportedAt: now, answers: S.answers};
+  L.push(""); L.push("---"); L.push("採点用データ（この下は編集しないでください）"); L.push("");
+  L.push("```json"); L.push(JSON.stringify(payload)); L.push("```");
+  return L.join("\n");
+}
+function fileName(){
+  const d = new Date(S.startedAt || Date.now());
+  const nm = (S.name || "受験者").replace(/[\\/:*?"<>|\s]+/g, "");
+  return "IDEA_LLMO昇格試験_解答_" + nm + "_" + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + ".md";
+}
+function msg(t, cls){ const m = document.getElementById("subMsg"); m.textContent = t; m.className = "msg " + (cls||""); }
+function showExport(){
+  const box = document.getElementById("exportBox"), ta = document.getElementById("exportTa");
+  ta.value = buildExport(); box.hidden = false; ta.focus(); ta.select();
+}
+let downloads = null;
+async function initDownloads(){
+  try{
+    if(window.claude && typeof window.claude.use === "function"){
+      downloads = await window.claude.use("downloads");
+      if(downloads) document.getElementById("saveBtn").hidden = false;
+    }
+  }catch(e){ downloads = null; }
+}
+async function saveFile(){
+  if(!downloads){ showExport(); return; }
+  try{
+    await downloads.save({filename: fileName(), data: buildExport()});
+    msg("解答ファイルを保存しました。指示された方法で提出してください。", "okk");
+  }catch(e){
+    const code = e && e.code;
+    if(code === "declined") msg("保存をキャンセルしました。", "");
+    else if(code === "rate_limited") msg("保存の確認画面がすでに開いています。少し待ってからもう一度押してください。", "err");
+    else { msg("この画面ではファイルを保存できませんでした。下のテキストをコピーして提出してください。", "err"); showExport(); }
+  }
+}
+async function copyAll(){
+  const ta = document.getElementById("exportTa");
+  ta.value = buildExport();
+  try{ await navigator.clipboard.writeText(ta.value); msg("解答テキストをコピーしました。", "okk"); }
+  catch(e){ ta.focus(); ta.select(); let ok = false; try{ ok = document.execCommand("copy"); }catch(_){} msg(ok ? "解答テキストをコピーしました。" : "テキストを選択しました。Ctrl+C（Macは⌘+C）でコピーしてください。", ok ? "okk" : ""); }
+}
+
+/* ---------- init ---------- */
+load();
+renderCover(); renderParts(); renderMap();
+const inName = document.getElementById("inName"), inOrg = document.getElementById("inOrg");
+inName.value = S.name || ""; inOrg.value = S.org || "";
+inName.addEventListener("input", () => { S.name = inName.value; updateName(); save(); });
+inOrg.addEventListener("input", () => { S.org = inOrg.value; updateName(); save(); });
+document.getElementById("startBtn").addEventListener("click", () => {
+  if(!S.name.trim()) return;
+  if(!confirm("試験を開始します。180分の計測が始まります。よろしいですか？")) return;
+  S.startedAt = Date.now(); save(); showExam(); tick();
+  document.getElementById("part-p1").scrollIntoView({block:"start"});
+});
+document.getElementById("mapBtn").addEventListener("click", () => toggleMap());
+document.getElementById("saveBtn").addEventListener("click", saveFile);
+document.getElementById("showBtn").addEventListener("click", showExport);
+document.getElementById("copyBtn").addEventListener("click", copyAll);
+document.getElementById("finishBtn").addEventListener("click", () => {
+  const un = QS.length - QS.filter(isAnswered).length;
+  if(!confirm((un ? "未解答が" + un + "問あります。" : "") + "試験を終了すると、解答は変更できなくなります。終了しますか？")) return;
+  S.finishedAt = Date.now(); save(); lock(); tick();
+  msg("試験を終了しました。解答ファイルを保存して提出してください。", "okk");
+});
+document.getElementById("eraseBtn").addEventListener("click", () => {
+  if(!confirm("この端末に保存されている解答をすべて消去します。元に戻せません。消去しますか？")) return;
+  try{ localStorage.removeItem(KEY_STORE); }catch(e){}
+  location.reload();
+});
+restoreAnswers(); updateName(); refreshProgress();
+if(S.startedAt) showExam();
+if(S.finishedAt) lock();
+if(!storageOK) setSaveState("この環境では自動保存できません。最後に必ず解答ファイルを保存してください。");
+tick(); setInterval(tick, 1000);
+initDownloads();
+</script>
+</body>
+</html>
